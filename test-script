@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+set -u
+
+echo testing $SCRIPT
+
+echo -n "test add via cmdline: "
+echo "new first issue" | $SCRIPT new
+
+echo -n "test default action: "
+$SCRIPT
+
+echo -n "test create from pipe: "
+for ((i=0; i<10; ++i))
+do 
+	$SCRIPT new <<< "new ticket $i $RANDOM $RANDOM"
+done
+
+echo test edit functionality: not testable
+
+echo -n "test grep: "
+$SCRIPT grep "new ticket 3"
+
+echo -n "test tag non-exist id: "
+$SCRIPT tag xxxxx new-xxx-tag || true
+
+echo -n "test exist id: "
+$SCRIPT tag $( $SCRIPT new test issue to tag ) test_tag
+$SCRIPT grep test_tag
+
+echo "*** all tests pass ***"
+
